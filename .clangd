@@ -1,0 +1,27 @@
+CompileFlags:
+    CompilationDatabase: ./
+    # compiler builtin paths aren't set in compile_comamnds.json
+    # so they must be manually specified here
+    Add:
+        - "-nostdinc++"
+        - "-isystem"
+        - "external/toolchains_llvm++llvm+llvm_toolchain_llvm/include/c++/v1"
+Index:
+    Background: Build
+    StandardLibrary: yes
+Diagnostics:
+    ClangTidy:
+        FastCheckFilter: Loose
+    UnusedIncludes: Strict
+    MissingIncludes: Strict
+Completion:
+    AllScopes: Yes
+InlayHints:
+    Enabled: Yes
+    ParameterNames: Yes
+    DeducedTypes: Yes
+    Designators: Yes
+    BlockEnd: Yes
+    TypeNameLimit: 0
+Hover:
+    ShowAKA: Yes

@@ -16,6 +16,16 @@ bazel_dep(
     dev_dependency = True,
 )
 bazel_dep(
+    name = "hedron_compile_commands",
+    version = "",
+    dev_dependency = True,
+)
+bazel_dep(
+    name = "platforms",
+    version = "1.0.0",
+    dev_dependency = True,
+)
+bazel_dep(
     name = "buildifier_prebuilt",
     version = "8.2.0.2",
     dev_dependency = True,
@@ -111,6 +121,19 @@ archive_override(
     ),
     urls = ["https://github.com/oliverlee/rules_clang_tidy/archive/{commit}.tar.gz".format(
         commit = RULES_CLANG_TIDY_COMMIT,
+    )],
+)
+
+HEDRON_COMPILE_COMMANDS_COMMIT = "4f28899228fb3ad0126897876f147ca15026151e"
+
+archive_override(
+    module_name = "hedron_compile_commands",
+    integrity = "sha256-ZYEiz7HyW+duohKwD16wR9jirci8+SO5GEYfKx43zfI=",
+    strip_prefix = "bazel-compile-commands-extractor-{commit}".format(
+        commit = HEDRON_COMPILE_COMMANDS_COMMIT,
+    ),
+    urls = ["https://github.com/hedronvision/bazel-compile-commands-extractor/archive/{commit}.tar.gz".format(
+        commit = HEDRON_COMPILE_COMMANDS_COMMIT,
     )],
 )
 
