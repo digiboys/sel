@@ -1,0 +1,97 @@
+load("@buildifier_prebuilt//:rules.bzl", "buildifier")
+load("@rules_multirun//:defs.bzl", "multirun")
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+
+buildifier(
+    name = "buildifier.check",
+    lint_mode = "warn",
+    mode = "check",
+)
+
+buildifier(
+    name = "buildifier",
+    lint_mode = "warn",
+    mode = "fix",
+)
+
+genrule(
+    name = "gen-clang-format",
+    outs = ["clang-format.bash"],
+    cmd = """
+echo "#!/bin/bash" > $@
+echo "cd \\$$BUILD_WORKSPACE_DIRECTORY" >> $@
+echo "exec bazelisk build \\$$@ //..." >> $@
+""",
+)
+
+sh_binary(
+    name = "clang-format.check",
+    srcs = ["clang-format.bash"],
+    args = [
+        "--aspects=@bazel_clang_format//:defs.bzl%check_aspect",
+        "--output_groups=report",
+        "--keep_going",
+    ],
+)
+
+sh_binary(
+    name = "clang-format",
+    srcs = ["clang-format.bash"],
+    args = [
+        "--aspects=@bazel_clang_format//:defs.bzl%fix_aspect",
+        "--output_groups=report",
+        "--keep_going",
+        "--use_action_cache=false",
+    ],
+)
+
+multirun(
+    name = "format.check",
+    commands = [
+        ":buildifier.check",
+        ":clang-format.check",
+    ],
+)
+
+multirun(
+    name = "format",
+    commands = [
+        ":buildifier",
+        ":clang-format",
+    ],
+)
+
+genrule(
+    name = "gen-clang-tidy",
+    outs = ["clang-tidy.bash"],
+    cmd = """
+echo "#!/bin/bash" > $@
+echo "cd \\$$BUILD_WORKSPACE_DIRECTORY" >> $@
+echo "exec bazelisk build {options} \\$${{@:-//...}}" >> $@
+""".format(
+        options = " ".join([
+            "--aspects=@rules_clang_tidy//:aspects.bzl%check",
+            "--output_groups=report",
+            "--keep_going",
+            "--verbose_failures",
+        ]),
+    ),
+)
+
+# lint all targets with default options
+#  bazel run //tools:lint
+#
+# lint with a single check on a single target
+#   bazel run //tools:lint -- \
+#     --@rules_clang_tidy//:extra-options=--checks='-*,clang-analyzer-core.uninitialized.Assign' \
+#     //test:point_test
+#
+sh_binary(
+    name = "clang-tidy",
+    srcs = ["clang-tidy.bash"],
+)
+
+alias(
+    name = "lint",
+    actual = ":clang-tidy",
+)
