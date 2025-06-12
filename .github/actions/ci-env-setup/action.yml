@@ -1,6 +1,11 @@
 name: "CI environment setup"
 description: |
   * set home bazelrc for CI runner
+  * set buildbuddy api key
+
+inputs:
+  buildbuddy-api-key:
+    required: true
 
 runs:
   using: "composite"
@@ -9,3 +14,4 @@ runs:
       shell: bash
       run: |
         cp .github/workflows/ci.bazelrc ~/.bazelrc
+        echo 'build:remote-cache --remote_header=x-buildbuddy-api-key=${{ inputs.buildbuddy-api-key }}' >> ~/.bazelrc

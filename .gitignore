@@ -1,2 +1,5 @@
 # bazel convenience symlinks
 /bazel-*
+
+# user-specific config
+user.bazelrc
