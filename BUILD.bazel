@@ -1,0 +1,11 @@
+filegroup(
+    name = "format-config",
+    srcs = [".clang-format"],
+    visibility = [":__subpackages__"],
+)
+
+filegroup(
+    name = "tidy-config",
+    srcs = [".clang-tidy"],
+    visibility = [":__subpackages__"],
+)

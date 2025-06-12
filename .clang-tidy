@@ -1,0 +1,66 @@
+UseColor: true
+
+Checks: >
+    bugprone-*,
+    clang-analyzer-cplusplus*,
+    concurrency-*,
+    cppcoreguidelines-*,
+    misc-*,
+    modernize-*,
+    performance-*,
+    readability-*,
+
+    # Bazel does this for determinism,
+    -clang-diagnostic-builtin-macro-redefined,
+
+    # short names are fine for short lifetimes,
+    -readability-identifier-length,
+
+    # allow unused variables to be unnamed,
+    -readability-named-parameter,
+
+    # use iterators as abstractions, not pointers,
+    -readability-qualified-auto,
+
+    # it's okay for exceptions to escape main,
+    -bugprone-exception-escape,
+
+    # disable common aliases,
+    -cppcoreguidelines-avoid-c-arrays,
+    -cppcoreguidelines-avoid-magic-numbers,
+    -cppcoreguidelines-c-copy-assignment-signature,
+    -cppcoreguidelines-explicit-virtual-functions,
+    -cppcoreguidelines-non-private-member-variables-in-classes,
+
+    # disable EXTREMELY SLOW checks,
+    -readability-identifier-naming,
+
+    # there are magic numbers in tests,
+    -readability-magic-numbers,
+
+    # hinnant style special member functions,
+    -cppcoreguidelines-special-member-functions,
+
+    # false positives with overloaded operators (e.g. `^`),
+    -misc-redundant-expression,
+
+    # favor member init - reserving the non-init semantic as uninit (e.g. fundamental types, arrays),
+    -readability-redundant-member-init,
+
+    # https://www.foonathan.net/2023/08/static-constexpr-integral_constant/,
+    -readability-static-accessed-through-instance,
+
+CheckOptions:
+    - key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
+      value: true
+    - key: performance-move-const-arg.CheckTriviallyCopyableMove
+      value: false
+    - key: readability-implicit-bool-conversion.AllowIntegerConditions
+      value : true
+    - key: readability-implicit-bool-conversion.AllowPointerConditions
+      value : true
+
+# only lint files coming from this project
+HeaderFilterRegex: '/sel/'
+
+WarningsAsErrors: '*'
