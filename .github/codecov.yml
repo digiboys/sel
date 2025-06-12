@@ -1,0 +1,12 @@
+# https://docs.codecov.com/docs/codecovyml-reference#coverage
+coverage:
+  status:
+    project: off
+    patch:
+      default:
+        target: 100%
+
+# https://docs.codecov.com/docs/pull-request-comments
+comment:
+  require_head: false
+  require_base: false
