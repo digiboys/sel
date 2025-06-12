@@ -111,3 +111,71 @@ refresh_compile_commands(
         "//sel/...": "--extra_toolchains=//tools:clang_toolchain",
     },
 )
+
+genrule(
+    name = "gen-coverage",
+    srcs = ["@lcov//:genhtml"],
+    outs = ["coverage.bash"],
+    cmd = """
+echo "#!/bin/bash" > $@
+echo "set -euo pipefail" >> $@
+echo "" >> $@
+echo "cd \\$$BUILD_WORKSPACE_DIRECTORY" >> $@
+echo "COVERAGE_DIR={cov_dir}" >> $@
+echo "bazelisk coverage \\$${{@:-//...}}" >> $@
+echo "$(execpath @lcov//:genhtml) {options} {report}" >> $@
+echo "" >> $@
+echo "echo wrote coverage report to" >> $@
+echo "echo file://{html}" >> $@
+""".format(
+        cov_dir = "\\$$(bazelisk info output_path)/_coverage",
+        html = "\\$${COVERAGE_DIR}/html/index.html",
+        options = " ".join([
+            "--output-directory \\$${COVERAGE_DIR}/html",
+            "--show-details",
+            "--function-coverage",
+            "--branch-coverage",
+            "--title zipline",
+            "--highlight",
+            "--legend",
+            "--missed",
+            "--demangle-cpp",
+            "--dark-mode",
+        ]),
+        report = "\\$${COVERAGE_DIR}/_coverage_report.dat",
+    ),
+)
+
+sh_binary(
+    name = "coverage",
+    srcs = [":coverage.bash"],
+    args = [
+        "--instrumentation_filter=//sel",
+        "//...",
+    ],
+    data = ["@lcov//:genhtml"],
+)
+
+_coverage_open_script = """
+echo "#!/bin/bash" > $@
+echo "set -euo pipefail" >> $@
+echo "" >> $@
+echo "cd \\$$BUILD_WORKSPACE_DIRECTORY" >> $@
+#echo "bazelisk run //tools:coverage" >> $@
+echo "exec {{cmd}} {html}" >> $@
+""".format(
+    html = "\\$$(bazelisk info output_path)/_coverage/html/index.html",
+)
+
+# due to sh_binary tokenization, we can't use a generic open command and pass
+# the path as an argument
+# https://github.com/bazelbuild/bazel/issues/12313
+genrule(
+    name = "coverage.open",
+    outs = ["coverage.open.bash"],
+    cmd = select({
+        "@platforms//os:macos": _coverage_open_script.format(cmd = "open"),
+        "@platforms//os:linux": _coverage_open_script.format(cmd = "xdg-open"),
+    }),
+    executable = True,
+)
