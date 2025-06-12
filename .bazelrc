@@ -12,6 +12,19 @@ build --@bazel_clang_format//:config=//:format-config
 build --@rules_clang_tidy//:clang-tidy=@llvm_toolchain//:clang-tidy
 build --@rules_clang_tidy//:config=//:tidy-config
 
+build:remote-cache --bes_results_url=https://digiboys.buildbuddy.io/invocation/
+build:remote-cache --bes_backend=grpcs://digiboys.buildbuddy.io
+build:remote-cache --bes_upload_mode=fully_async
+build:remote-cache --remote_cache=grpcs://digiboys.buildbuddy.io
+build:remote-cache --remote_timeout=10m
+build:remote-cache --remote_build_event_upload=minimal
+build:remote-cache --remote_download_outputs=minimal
+build:remote-cache --remote_cache_compression
+build:remote-cache --slim_profile=false
+build:remote-cache --experimental_profile_include_primary_output
+build:remote-cache --experimental_profile_include_target_label
+build:remote-cache --legacy_important_outputs=false
+
 test --test_verbose_timeout_warnings
 
 # https://github.com/bazelbuild/bazel/issues/14970#issuecomment-1894565761

@@ -1,8 +1,14 @@
+common --build_metadata=ROLE=CI
+
 build --show_timestamps
 build --announce_rc
 build --color=yes
 build --curses=no
 build --terminal_columns=120
 build --verbose_failures
+
+build:remote-cache --remote_upload_local_results=true
+build:remote-cache --remote_instance_name=ci-runner-sel-instance-0
+build --config=remote-cache
 
 test --test_output=errors

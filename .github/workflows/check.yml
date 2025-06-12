@@ -22,29 +22,24 @@ jobs:
           - 'ubuntu-latest'
           - 'macos-latest'
     runs-on: ${{ matrix.os }}
-    env:
-      PROFILE: profile-${{ matrix.os }}-${{ matrix.compilation_mode }}-${{ matrix.toolchain }}.gz
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci-env-setup
+      with:
+        buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
     - run: |
         bazel test \
-          --profile=$PROFILE \
           --compilation_mode=${{ matrix.compilation_mode }} \
           --extra_toolchains=//tools:${{ matrix.toolchain }}_toolchain \
           //...
-
-        bazel analyze-profile $PROFILE
-    - uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.PROFILE }}
-        path : ${{ env.PROFILE }}
 
   format:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci-env-setup
+      with:
+        buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
     - run: |
         bazel run //tools:format.check
 
@@ -55,6 +50,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci-env-setup
+      with:
+        buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
     - id: query
       run: |
         targets=$(\
@@ -77,6 +74,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci-env-setup
+      with:
+        buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
     - run: |
         bazel run //tools:clang-tidy -- ${{ matrix.target }}
 
