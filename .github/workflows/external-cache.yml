@@ -1,0 +1,56 @@
+name: external-cache
+
+on:
+  schedule:
+    - cron: "0 10 * * *" # UTC
+  workflow_dispatch:
+
+jobs:
+  clear-workflow-external-cache:
+    runs-on:
+      - ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    steps:
+    - name: cleanup caches
+      # https://github.com/actions/cache/blob/main/tips-and-workarounds.md#force-deletion-of-caches-overriding-default-cache-eviction-policy
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        gh cache delete --all --succeed-on-no-caches \
+          --repo ${{ github.repository }}
+
+  refresh-workflow-external-cache:
+    needs:
+      - clear-workflow-external-cache
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - 'ubuntu-latest'
+          - 'macos-latest'
+    runs-on: ${{ matrix.os }}
+    permissions:
+      actions: write
+      contents: read
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci-env-setup
+      with:
+        buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
+    - name: fetch external deps
+      run: |
+        bazel vendor \
+          --vendor_dir=~/bazel_external_deps \
+          //sel/...
+    - name: print vendored external deps
+      run: |
+        ls -al ~/bazel_external_deps/
+        du -sh ~/bazel_external_deps/
+    - name: save to actions/cache
+      uses: actions/cache/save@v4
+      with:
+        path: |
+          ~/bazel_external_deps
+        key: bazel-external-cache-${{ runner.os }}
