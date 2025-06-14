@@ -3,6 +3,14 @@ load("@hedron_compile_commands//:refresh_compile_commands.bzl", "refresh_compile
 load("@rules_multirun//:defs.bzl", "multirun")
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 
+alias(
+    name = "clang_toolchain",
+    actual = select({
+        "@platforms//os:macos": "@llvm_toolchain//:cc-toolchain-aarch64-darwin",
+        "@platforms//os:linux": "@llvm_toolchain//:cc-toolchain-x86_64-linux",
+    }),
+)
+
 buildifier(
     name = "buildifier.check",
     lint_mode = "warn",
@@ -95,14 +103,6 @@ sh_binary(
 alias(
     name = "lint",
     actual = ":clang-tidy",
-)
-
-alias(
-    name = "clang_toolchain",
-    actual = select({
-        "@platforms//os:macos": "@llvm_toolchain//:cc-toolchain-aarch64-darwin",
-        "@platforms//os:linux": "@llvm_toolchain//:cc-toolchain-x86_64-linux",
-    }),
 )
 
 refresh_compile_commands(
