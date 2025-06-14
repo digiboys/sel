@@ -1,0 +1,41 @@
+// Folder-specific settings
+//
+// For a full list of overridable settings, and general information on folder-specific settings,
+// see the documentation: https://zed.dev/docs/configuring-zed#settings-files
+{
+  "format_on_save": "off",
+  "file_scan_exclusions": [".cache/"],
+  "languages": {
+    "Starlark": {
+      "enable_language_server": true,
+      "language_servers": ["starpls"] // very buggy =/
+    }
+  },
+  // This uses the hermetic clangd from the llvm toolchain, but arguments
+  // may vary due to personal preference.
+  //
+  // https://github.com/zed-industries/zed/discussions/6629#discussioncomment-10493418
+  // https://github.com/zed-industries/zed/issues/4295#issuecomment-2287229162
+  "lsp": {
+    "clangd": {
+      "binary": {
+        "path": "./external/toolchains_llvm++llvm+llvm_toolchain_llvm/bin/clangd",
+        "arguments": [
+          "--function-arg-placeholders=0",
+          "--completion-parse=always",
+          "--all-scopes-completion",
+          "--clang-tidy",
+          "--debug-origin",
+          "--header-insertion=iwyu",
+          "--header-insertion-decorators",
+          "--include-ineligible-results",
+          "--import-insertions",
+          "--limit-references=0",
+          "--limit-results=0",
+          "--rename-file-limit=0",
+          "--log=verbose"
+        ]
+      }
+    }
+  }
+}

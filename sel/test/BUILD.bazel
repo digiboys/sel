@@ -4,5 +4,8 @@ cc_test(
     name = "dummy_test",
     size = "small",
     srcs = ["dummy_test.cpp"],
-    deps = ["@skytest"],
+    deps = [
+        "//sel",
+        "@skytest",
+    ],
 )
