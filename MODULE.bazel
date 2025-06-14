@@ -41,6 +41,11 @@ bazel_dep(
     dev_dependency = True,
 )
 bazel_dep(
+    name = "bazel_skylib",
+    version = "1.7.1",
+    dev_dependency = True,
+)
+bazel_dep(
     name = "skytest",
     version = "",
     dev_dependency = True,
@@ -148,4 +153,22 @@ archive_override(
     urls = ["https://github.com/oliverlee/skytest/archive/{commit}.tar.gz".format(
         commit = SKYTEST_COMMIT,
     )],
+)
+
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "lcov",
+    build_file_content = """\
+load("@bazel_skylib//rules:native_binary.bzl", "native_binary")
+
+native_binary(
+    name = "genhtml",
+    src = "bin/genhtml",
+    visibility = ["//visibility:public"],
+)
+    """,
+    integrity = "sha256-mHAxrVUoyKdG1LUrOAvBv/5BLeHyucK6UiSZVmjjJAs=",
+    strip_prefix = "lcov-1.16",
+    url = "https://github.com/linux-test-project/lcov/releases/download/v1.16/lcov-1.16.tar.gz",
 )

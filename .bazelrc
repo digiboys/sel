@@ -19,4 +19,7 @@ coverage --copt=-ffile-compilation-dir=.
 coverage --combined_report=lcov
 coverage --experimental_generate_llvm_lcov
 
+# https://github.com/bazelbuild/bazel/issues/23719
+coverage:macos --test_env=GCOV_PREFIX_STRIP=10
+
 try-import %workspace%/user.bazelrc
