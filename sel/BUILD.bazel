@@ -1,27 +1,44 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 
+package(default_visibility = [":__subpackages__"])
+
+cc_library(
+    name = "constant",
+    hdrs = ["constant.hpp"],
+    deps = [
+        ":contract",
+        ":strongly_ordered",
+        ":term",
+    ],
+)
+
 cc_library(
     name = "contract",
     hdrs = ["contract.hpp"],
-    visibility = [":__subpackages__"],
 )
 
 cc_library(
     name = "plus",
     hdrs = ["plus.hpp"],
-    visibility = [":__subpackages__"],
     deps = [":term"],
+)
+
+cc_library(
+    name = "strongly_ordered",
+    hdrs = ["strongly_ordered.hpp"],
 )
 
 cc_library(
     name = "term",
     hdrs = ["term.hpp"],
-    visibility = [":__subpackages__"],
+    deps = [":strongly_ordered"],
 )
 
 cc_library(
     name = "variable",
     hdrs = ["variable.hpp"],
-    visibility = [":__subpackages__"],
-    deps = [":contract"],
+    deps = [
+        ":contract",
+        ":term",
+    ],
 )
