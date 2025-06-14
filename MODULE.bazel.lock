@@ -215,6 +215,8 @@
     "https://raw.githubusercontent.com/digiboys/bazel-registry/main/modules/rules_cc/0.0.8/MODULE.bazel": "not found",
     "https://raw.githubusercontent.com/digiboys/bazel-registry/main/modules/rules_cc/0.0.9/MODULE.bazel": "not found",
     "https://raw.githubusercontent.com/digiboys/bazel-registry/main/modules/rules_cc/0.1.1/MODULE.bazel": "not found",
+    "https://raw.githubusercontent.com/digiboys/bazel-registry/main/modules/rules_clang_tidy/0.0.0/MODULE.bazel": "d52b77d619bf28dbf2327394c36b8c224e7095b6c5e7e5d5b441116a8f2fff99",
+    "https://raw.githubusercontent.com/digiboys/bazel-registry/main/modules/rules_clang_tidy/0.0.0/source.json": "76aa5c2d020e5b7431be99ad0e7fb0a64f6a9dc74de46713fe5592a85fbed123",
     "https://raw.githubusercontent.com/digiboys/bazel-registry/main/modules/rules_foreign_cc/0.9.0/MODULE.bazel": "not found",
     "https://raw.githubusercontent.com/digiboys/bazel-registry/main/modules/rules_fuzzing/0.5.2/MODULE.bazel": "not found",
     "https://raw.githubusercontent.com/digiboys/bazel-registry/main/modules/rules_java/4.0.0/MODULE.bazel": "not found",

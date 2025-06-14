@@ -29,6 +29,7 @@ build:remote-cache --experimental_profile_include_target_label
 build:remote-cache --legacy_important_outputs=false
 
 test --test_verbose_timeout_warnings
+test --test_output=errors
 
 # https://github.com/bazelbuild/bazel/issues/14970#issuecomment-1894565761
 coverage --copt=-ffile-compilation-dir=.
