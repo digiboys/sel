@@ -142,11 +142,11 @@ archive_override(
     )],
 )
 
-SKYTEST_COMMIT = "6c0848990cc3a9e0a9b9749e0a5244ce0b96279a"
+SKYTEST_COMMIT = "1cf62c154ae75089271b2f1938c0cc5dea53b46e"
 
 archive_override(
     module_name = "skytest",
-    integrity = "sha256-zy776i844vVBkq4lyGU+cg9H1+Q84kTCzrj+VWHWJds=",
+    integrity = "sha256-oZy5srZ87iLa+L6M8xmE+S/f+Eq1gNp4TD0EIpjELSU=",
     strip_prefix = "skytest-{commit}".format(
         commit = SKYTEST_COMMIT,
     ),
