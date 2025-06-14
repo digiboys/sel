@@ -38,6 +38,7 @@ InsertNewlineAtEOF: true
 Language: Cpp
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: None
+PackConstructorInitializers: Never
 PenaltyIndentedWhitespace: 200
 PenaltyReturnTypeOnItsOwnLine: 1
 PointerAlignment: Left

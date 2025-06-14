@@ -1,7 +1,27 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 
 cc_library(
-    name = "sel",
-    hdrs = ["sel.hpp"],
-    visibility = ["//visibility:public"],
+    name = "contract",
+    hdrs = ["contract.hpp"],
+    visibility = [":__subpackages__"],
+)
+
+cc_library(
+    name = "plus",
+    hdrs = ["plus.hpp"],
+    visibility = [":__subpackages__"],
+    deps = [":term"],
+)
+
+cc_library(
+    name = "term",
+    hdrs = ["term.hpp"],
+    visibility = [":__subpackages__"],
+)
+
+cc_library(
+    name = "variable",
+    hdrs = ["variable.hpp"],
+    visibility = [":__subpackages__"],
+    deps = [":contract"],
 )
