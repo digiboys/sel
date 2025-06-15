@@ -1,0 +1,11 @@
+name: "CI environment setup"
+description: |
+  * set home bazelrc for CI runner
+
+runs:
+  using: "composite"
+  steps:
+    - name: setup ci bazelrc
+      shell: bash
+      run: |
+        cp .github/workflows/ci.bazelrc ~/.bazelrc
