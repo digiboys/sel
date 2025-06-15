@@ -20,7 +20,10 @@ cc_library(
 cc_library(
     name = "plus",
     hdrs = ["plus.hpp"],
-    deps = [":term"],
+    deps = [
+        ":term",
+        ":term_promotable",
+    ],
 )
 
 cc_library(
@@ -32,6 +35,15 @@ cc_library(
     name = "term",
     hdrs = ["term.hpp"],
     deps = [":strongly_ordered"],
+)
+
+cc_library(
+    name = "term_promotable",
+    hdrs = ["term_promotable.hpp"],
+    deps = [
+        ":constant",
+        ":term",
+    ],
 )
 
 cc_library(

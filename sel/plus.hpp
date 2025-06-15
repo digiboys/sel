@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sel/term.hpp"
+#include "sel/term_promotable.hpp"
 
 #include <cstddef>
 #include <format>
@@ -35,26 +36,26 @@ struct plus
     );
   }
 
-  template <term T>
+  template <term_promotable T>
   [[nodiscard]]
   friend constexpr auto operator+(const plus& x, const T& y)
   {
-    return x + plus<T>{y};
+    return x + plus<term_promoted_type_t<T>>{to_term(y)};
   }
 
-  template <term T>
+  template <term_promotable T>
   [[nodiscard]]
   friend constexpr auto operator+(const T& x, const plus& y)
   {
-    return plus<T>{x} + y;
+    return plus<term_promoted_type_t<T>>{to_term(x)} + y;
   }
 };
 
-template <term T1, term T2>
+template <term_promotable T1, term_promotable T2>
 [[nodiscard]]
 constexpr auto operator+(const T1& x, const T2& y)
 {
-  return plus<T1, T2>{x, y};
+  return plus{to_term(x), to_term(y)};
 }
 
 }  // namespace sel
