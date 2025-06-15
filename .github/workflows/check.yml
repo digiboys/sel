@@ -79,6 +79,21 @@ jobs:
     - run: |
         bazel run //tools:clang-tidy -- ${{ matrix.target }}
 
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci-env-setup
+      with:
+        buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
+    - run: |
+        bazel run //tools:coverage
+    - uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./bazel-out/_coverage/_coverage_report.dat
+        fail_ci_if_error: true
+
   # https://emmer.dev/blog/skippable-github-status-checks-aren-t-really-required/
   # https://github.com/marketplace/actions/alls-green
   all:
@@ -88,6 +103,7 @@ jobs:
       - test
       - format
       - lint
+      - coverage
     steps:
     - uses: re-actors/alls-green@release/v1
       with:
