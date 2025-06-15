@@ -34,6 +34,16 @@ auto main() -> int
     );
   };
 
+  "binary + can implicit convert a signed integer or floating point type to `constant`"_ctest =
+      [] {
+        return expect(
+            eq(sel::plus{sel::constant{3}, x}, 3 + x) and           //
+            eq(sel::plus{x, sel::constant{3.0}}, x + 3.0) and       //
+            eq(sel::plus{x, y, sel::constant{0}}, (x + y) + 0) and  //
+            eq(sel::plus{x, y, sel::constant{3}}, (x + y) + (1 + 2))
+        );
+      };
+
   "+ can be used with more than 2 arguments"_ctest = [] {
     return expect(
         eq(sel::plus{x, y, z}, x + y + z) and             //
