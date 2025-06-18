@@ -11,11 +11,12 @@ cc_test(
 )
 
 cc_test(
-    name = "plus_test",
+    name = "nary_op_test",
     size = "small",
-    srcs = ["plus_test.cpp"],
+    srcs = ["nary_op_test.cpp"],
     deps = [
         "//sel:constant",
+        "//sel:multiplies",
         "//sel:plus",
         "//sel:variable",
         "@skytest",

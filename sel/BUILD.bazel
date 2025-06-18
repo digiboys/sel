@@ -18,6 +18,15 @@ cc_library(
 )
 
 cc_library(
+    name = "multiplies",
+    hdrs = ["multiplies.hpp"],
+    deps = [
+        ":term",
+        ":term_promotable",
+    ],
+)
+
+cc_library(
     name = "plus",
     hdrs = ["plus.hpp"],
     deps = [
