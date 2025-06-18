@@ -2,22 +2,20 @@ bazel_dep(name = "rules_cc", version = "0.1.1")
 
 bazel_dep(
     name = "toolchains_llvm",
-    version = "",
     dev_dependency = True,
 )
 bazel_dep(
     name = "bazel_clang_format",
-    version = "",
+    version = "0.0.0",
     dev_dependency = True,
 )
 bazel_dep(
     name = "rules_clang_tidy",
-    version = "",
+    version = "0.0.0",
     dev_dependency = True,
 )
 bazel_dep(
     name = "hedron_compile_commands",
-    version = "",
     dev_dependency = True,
 )
 bazel_dep(
@@ -47,7 +45,7 @@ bazel_dep(
 )
 bazel_dep(
     name = "skytest",
-    version = "",
+    version = "0.0.0",
     dev_dependency = True,
 )
 
@@ -103,32 +101,6 @@ use_repo(llvm, "llvm_toolchain")
 
 register_toolchains("@llvm_toolchain//:all")
 
-BAZEL_CLANG_FORMAT_COMMIT = "1fd2a042798ede8d6f5498ea92287bc1204260fa"
-
-archive_override(
-    module_name = "bazel_clang_format",
-    integrity = "sha256-wcS8GuHvn57FgtMHGLVlBZB+pZ4ojkploCzlwU+ZDFc=",
-    strip_prefix = "bazel_clang_format-{commit}".format(
-        commit = BAZEL_CLANG_FORMAT_COMMIT,
-    ),
-    urls = [
-        "https://github.com/oliverlee/bazel_clang_format/archive/{commit}.tar.gz".format(commit = BAZEL_CLANG_FORMAT_COMMIT),
-    ],
-)
-
-RULES_CLANG_TIDY_COMMIT = "d50f5bd1d8e861c39ad8313645b755e300e52b58"
-
-archive_override(
-    module_name = "rules_clang_tidy",
-    integrity = "sha256-U8klhJSImGCCZ9nT3OxPlPzbqDCfxDcUcUoLKYWQkxQ=",
-    strip_prefix = "rules_clang_tidy-{commit}".format(
-        commit = RULES_CLANG_TIDY_COMMIT,
-    ),
-    urls = ["https://github.com/oliverlee/rules_clang_tidy/archive/{commit}.tar.gz".format(
-        commit = RULES_CLANG_TIDY_COMMIT,
-    )],
-)
-
 HEDRON_COMPILE_COMMANDS_COMMIT = "4f28899228fb3ad0126897876f147ca15026151e"
 
 archive_override(
@@ -139,19 +111,6 @@ archive_override(
     ),
     urls = ["https://github.com/hedronvision/bazel-compile-commands-extractor/archive/{commit}.tar.gz".format(
         commit = HEDRON_COMPILE_COMMANDS_COMMIT,
-    )],
-)
-
-SKYTEST_COMMIT = "6c0848990cc3a9e0a9b9749e0a5244ce0b96279a"
-
-archive_override(
-    module_name = "skytest",
-    integrity = "sha256-zy776i844vVBkq4lyGU+cg9H1+Q84kTCzrj+VWHWJds=",
-    strip_prefix = "skytest-{commit}".format(
-        commit = SKYTEST_COMMIT,
-    ),
-    urls = ["https://github.com/oliverlee/skytest/archive/{commit}.tar.gz".format(
-        commit = SKYTEST_COMMIT,
     )],
 )
 
