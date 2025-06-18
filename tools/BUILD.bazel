@@ -141,6 +141,7 @@ echo "echo file://{html}" >> $@
             "--missed",
             "--demangle-cpp",
             "--dark-mode",
+            "--rc genhtml_hi_limit=100",
         ]),
         report = "\\$${COVERAGE_DIR}/_coverage_report.dat",
     ),
