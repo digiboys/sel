@@ -1,11 +1,22 @@
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
 
 cc_test(
-    name = "dummy_test",
+    name = "plus_test",
     size = "small",
-    srcs = ["dummy_test.cpp"],
+    srcs = ["plus_test.cpp"],
     deps = [
-        "//sel",
+        "//sel:plus",
+        "//sel:variable",
+        "@skytest",
+    ],
+)
+
+cc_test(
+    name = "variable_test",
+    size = "small",
+    srcs = ["variable_test.cpp"],
+    deps = [
+        "//sel:variable",
         "@skytest",
     ],
 )
