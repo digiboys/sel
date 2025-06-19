@@ -8,7 +8,13 @@
   "languages": {
     "Starlark": {
       "enable_language_server": true,
-      "language_servers": ["starpls"] // very buggy =/
+      "language_servers": ["starpls"],
+      "formatter": {
+        "external": {
+          "command": "./external/buildifier_prebuilt++buildifier_prebuilt_deps_extension+buildifier_darwin_arm64/file/buildifier",
+          "arguments": ["--path", "{buffer_path}"]
+        }
+      }
     }
   },
   // This uses the hermetic clangd from the llvm toolchain, but arguments
@@ -34,6 +40,16 @@
           "--limit-results=0",
           "--rename-file-limit=0",
           "--log=verbose"
+        ]
+      }
+    },
+    "starpls": {
+      "binary": {
+        "arguments": [
+          "server",
+          "--experimental_enable_label_completions",
+          "--experimental_use_code_flow_analysis",
+          "--experimental_infer_ctx_attributes"
         ]
       }
     }
