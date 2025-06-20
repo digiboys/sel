@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: ["*"]
     types: [synchronize, opened, reopened, edited]
-  merge_group:
   workflow_dispatch:
 
 jobs:
