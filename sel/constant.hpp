@@ -14,7 +14,7 @@ namespace sel {
 /// symbol that represents a specified quantity in an expression
 template <class T>
   requires std::signed_integral<T> or std::floating_point<T>
-class constant
+class constant : public term_base
 {
   T value_{};
 
@@ -78,9 +78,6 @@ public:
     return common_constant(x.value()) <=> common_constant(y.value());
   }
 };
-
-template <class T>
-constexpr bool enable_as_term<constant<T>> = true;
 
 }  // namespace sel
 

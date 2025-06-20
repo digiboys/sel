@@ -9,7 +9,7 @@
 namespace sel {
 
 /// returns a `term`
-/// This overload forward a `term` unchanged
+/// This overload forwards a `term` unchanged
 template <class T>
   requires term<std::remove_cvref_t<T>>
 [[nodiscard]]
