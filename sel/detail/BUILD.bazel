@@ -1,0 +1,14 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+package(default_visibility = ["//sel:__subpackages__"])
+
+cc_library(
+    name = "nary_op_formatter",
+    hdrs = ["nary_op_formatter.hpp"],
+    deps = [":string_literal"],
+)
+
+cc_library(
+    name = "string_literal",
+    hdrs = ["string_literal.hpp"],
+)
