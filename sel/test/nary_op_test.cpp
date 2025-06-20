@@ -9,6 +9,20 @@
 #include <tuple>
 #include <type_traits>
 
+namespace test {
+
+template <template <class...> class nary_op>
+struct construct
+{
+  template <class... Ts>
+  constexpr auto operator()() const -> nary_op<Ts...>
+  {
+    return {};
+  }
+};
+
+}  // namespace test
+
 auto main() -> int
 {
   using namespace skytest::literals;
@@ -20,6 +34,13 @@ auto main() -> int
 
   static constexpr auto a = sel::constant{1};
   static constexpr auto b = sel::constant{2};
+
+  "nary op cannot have zero arguments"_ctest = [] {
+    return expect(
+        not pred(std::is_invocable<test::construct<sel::plus>>{})() and
+        not pred(std::is_invocable<test::construct<sel::multiplies>>{})()
+    );
+  };
 
   "nary op suite"_test *
       std::tuple{std::plus{}, std::multiplies{}} = []<class T>(T) {
