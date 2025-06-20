@@ -1,13 +1,12 @@
 #pragma once
 
+#include "sel/detail/nary_op_formatter.hpp"
 #include "sel/term.hpp"
 #include "sel/term_promotable.hpp"
 
 #include <cstddef>
 #include <format>
-#include <string_view>
 #include <tuple>
-#include <utility>
 
 namespace sel {
 
@@ -62,25 +61,5 @@ constexpr auto operator+(const T1& x, const T2& y)
 
 template <class... Args, class Char>
 struct ::std::formatter<::sel::plus<Args...>, Char>
-    : std::formatter<std::string_view, Char>
-{
-  template <class O>
-  constexpr auto format(
-      const ::sel::plus<Args...>& expr, std::basic_format_context<O, Char>& ctx
-  ) const
-  {
-    auto out = ctx.out();
-    out = std::format_to(out, "(");
-
-    [&]<std::size_t... Is>(std::index_sequence<Is...>) {
-      auto fmt = [](bool first) { return first ? "{}" : " + {}"; };
-
-      auto _ = {(
-          out = std::format_to(out, fmt(Is == 0), std::get<Is>(expr.args)), 0
-      )...};
-    }(std::index_sequence_for<Args...>{});
-
-    out = std::format_to(out, ")");
-    return out;
-  }
-};
+    : std::formatter<::sel::detail::nary_op_formatter<"+", Args...>, Char>
+{};
