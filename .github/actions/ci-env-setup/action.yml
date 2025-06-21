@@ -7,6 +7,12 @@ description: |
 inputs:
   buildbuddy-api-key:
     required: true
+    description: |
+      BuildBuddy API key to access the remote cache.
+  external-cache-key:
+    default: ${{ runner.os }}-default
+    description: |
+      Key specifying which cache to restore.
 
 runs:
   using: "composite"
@@ -27,4 +33,4 @@ runs:
       with:
         path: |
           ~/bazel_external_deps
-        key: bazel-external-cache-${{ runner.os }}
+        key: bazel-external-cache-${{ inputs.external-cache-key }}
