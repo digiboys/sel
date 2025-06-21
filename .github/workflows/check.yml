@@ -16,8 +16,6 @@ jobs:
         compilation_mode:
           - 'fastbuild'
           - 'opt'
-        toolchain:
-          - 'clang'
         os:
           - 'ubuntu-latest'
           - 'macos-latest'
@@ -30,7 +28,6 @@ jobs:
     - run: |
         bazel test \
           --compilation_mode=${{ matrix.compilation_mode }} \
-          --extra_toolchains=//tools:${{ matrix.toolchain }}_toolchain \
           //...
 
   format:
