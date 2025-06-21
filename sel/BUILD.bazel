@@ -24,8 +24,8 @@ cc_library(
         ":operation",
         ":term",
         ":term_promotable",
+        "//sel/detail:infix_operation_formatter",
         "//sel/detail:is_specialization_of",
-        "//sel/detail:nary_op_formatter",
     ],
 )
 
@@ -42,8 +42,8 @@ cc_library(
         ":operation",
         ":term",
         ":term_promotable",
+        "//sel/detail:infix_operation_formatter",
         "//sel/detail:is_specialization_of",
-        "//sel/detail:nary_op_formatter",
     ],
 )
 
