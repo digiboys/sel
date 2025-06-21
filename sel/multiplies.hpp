@@ -1,13 +1,12 @@
 #pragma once
 
+#include "sel/detail/infix_operation_formatter.hpp"
 #include "sel/detail/is_specialization_of.hpp"
-#include "sel/detail/nary_op_formatter.hpp"
 #include "sel/operation.hpp"
 #include "sel/term.hpp"
 #include "sel/term_promotable.hpp"
 
 #include <cstddef>
-#include <format>
 #include <tuple>
 
 namespace sel {
@@ -18,6 +17,8 @@ template <term... Args>
   requires (sizeof...(Args) != 0)
 struct multiplies : operation_interface<multiplies<Args...>>
 {
+  using formatter = detail::infix_operation_formatter<"*", Args...>;
+
   constexpr multiplies(const Args&... args)
       : operation_interface<multiplies>{args...}
   {}
@@ -59,8 +60,3 @@ constexpr auto operator*(const T1& x, const T2& y)
 }
 
 }  // namespace sel
-
-template <class... Args, class Char>
-struct ::std::formatter<::sel::multiplies<Args...>, Char>
-    : std::formatter<::sel::detail::nary_op_formatter<"*", Args...>, Char>
-{};

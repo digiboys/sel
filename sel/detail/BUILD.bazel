@@ -3,14 +3,14 @@ load("@rules_cc//cc:cc_library.bzl", "cc_library")
 package(default_visibility = ["//sel:__subpackages__"])
 
 cc_library(
-    name = "is_specialization_of",
-    hdrs = ["is_specialization_of.hpp"],
+    name = "infix_operation_formatter",
+    hdrs = ["infix_operation_formatter.hpp"],
+    deps = [":string_literal"],
 )
 
 cc_library(
-    name = "nary_op_formatter",
-    hdrs = ["nary_op_formatter.hpp"],
-    deps = [":string_literal"],
+    name = "is_specialization_of",
+    hdrs = ["is_specialization_of.hpp"],
 )
 
 cc_library(

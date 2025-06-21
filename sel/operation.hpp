@@ -3,6 +3,7 @@
 #include "sel/strongly_ordered.hpp"
 
 #include <concepts>
+#include <format>
 #include <tuple>
 
 namespace sel {
@@ -11,10 +12,10 @@ template <class>
 struct operation_interface;
 
 /// deriving from `operation_interface` enables types to model `operation`
-template <template <class...> class derived, class... Args>
+template <template <class...> class op, class... Args>
   requires (std::copyable<Args> and ...) and  //
            (strongly_ordered<Args> and ...)
-struct operation_interface<derived<Args...>>
+struct operation_interface<op<Args...>>
 {
   std::tuple<Args...> args;
 
@@ -42,3 +43,8 @@ concept operation =                          //
     std::derived_from<T, operation_interface<T>>;
 
 }  // namespace sel
+
+template <class Op, class Char>
+  requires std::derived_from<Op, ::sel::operation_interface<Op>>
+struct ::std::formatter<Op, Char> : std::formatter<typename Op::formatter, Char>
+{};
