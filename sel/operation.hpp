@@ -3,7 +3,10 @@
 #include "sel/strongly_ordered.hpp"
 
 #include <concepts>
+#include <cstddef>
 #include <tuple>
+#include <type_traits>
+#include <utility>
 
 namespace sel {
 
@@ -11,16 +14,21 @@ template <class>
 struct operation_interface;
 
 /// deriving from `operation_interface` enables types to model `operation`
-template <template <class...> class derived, class... Args>
+template <template <class...> class op, class... Args>
   requires (std::copyable<Args> and ...) and  //
            (strongly_ordered<Args> and ...)
-struct operation_interface<derived<Args...>>
+struct operation_interface<op<Args...>>
 {
   std::tuple<Args...> args;
 
+  /// construct from arguments
   constexpr operation_interface(const Args&... args)
       : args{args...}
   {}
+
+  /// construct the derived operation with different arguments
+  static constexpr auto construct =
+      []<class... Ts>(const Ts&... args) -> op<Ts...> { return {args...}; };
 
   friend auto
   operator<=>(const operation_interface&, const operation_interface&) = default;
@@ -42,3 +50,10 @@ concept operation =                          //
     std::derived_from<T, operation_interface<T>>;
 
 }  // namespace sel
+
+template <template <class...> class op, class... Args>
+  requires std::
+      derived_from<op<Args...>, ::sel::operation_interface<op<Args...>>>
+    struct std::tuple_size<op<Args...>>
+    : std::integral_constant<std::size_t, sizeof...(Args)>
+{};
