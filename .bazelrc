@@ -39,4 +39,7 @@ coverage --experimental_generate_llvm_lcov
 # https://github.com/bazelbuild/bazel/issues/23719
 coverage:macos --test_env=GCOV_PREFIX_STRIP=10
 
+build:local-config-cc --action_env="BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=0"
+build:local-config-cc --extra_toolchains=@@rules_cc++cc_configure_extension+local_config_cc_toolchains//:all
+
 try-import %workspace%/user.bazelrc

@@ -27,9 +27,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - 'ubuntu-latest'
-          - 'macos-latest'
+        include:
+          - config: 'default'
+            os: 'ubuntu-latest'
+          - config: 'default'
+            os: 'macos-latest'
+          - config: 'local-config-cc'
+            os: 'ubuntu-latest'
     runs-on: ${{ matrix.os }}
     permissions:
       actions: write
@@ -40,10 +44,18 @@ jobs:
       with:
         buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
     - name: fetch external deps
+      if: matrix.config == 'default'
       run: |
         bazel vendor \
           --vendor_dir=~/bazel_external_deps \
           //sel/...
+    - name: fetch external deps
+      if: matrix.config == 'local-config-cc'
+      run: |
+        bazel vendor \
+          --vendor_dir=~/bazel_external_deps \
+          --config=local-config-cc \
+          //...
     - name: print vendored external deps
       run: |
         ls -al ~/bazel_external_deps/
@@ -53,4 +65,4 @@ jobs:
       with:
         path: |
           ~/bazel_external_deps
-        key: bazel-external-cache-${{ runner.os }}
+        key: bazel-external-cache-${{ runner.os }}-${{ matrix.config }}
