@@ -71,6 +71,16 @@ cc_library(
 )
 
 cc_library(
+    name = "transform",
+    hdrs = ["transform.hpp"],
+    deps = [
+        ":operation",
+        ":term",
+        "//sel/detail:transform",
+    ],
+)
+
+cc_library(
     name = "variable",
     hdrs = ["variable.hpp"],
     deps = [
