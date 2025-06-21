@@ -12,7 +12,7 @@
 namespace sel {
 
 /// symbol that represents an unspecified quantity in an expression
-class variable
+class variable : public term_base
 {
   std::string value_{};
 
@@ -34,10 +34,6 @@ public:
   friend auto operator<=>(const variable&, const variable&)
       -> std::strong_ordering = default;
 };
-
-template <>
-// NOLINTNEXTLINE(misc-definitions-in-headers)
-constexpr bool enable_as_term<variable> = true;
 
 }  // namespace sel
 

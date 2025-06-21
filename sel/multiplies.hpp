@@ -1,6 +1,8 @@
 #pragma once
 
+#include "sel/detail/is_specialization_of.hpp"
 #include "sel/detail/nary_op_formatter.hpp"
+#include "sel/operation.hpp"
 #include "sel/term.hpp"
 #include "sel/term_promotable.hpp"
 
@@ -14,15 +16,11 @@ namespace sel {
 ///
 template <term... Args>
   requires (sizeof...(Args) != 0)
-struct multiplies
+struct multiplies : operation_interface<multiplies<Args...>>
 {
-  std::tuple<Args...> args{};
-
   constexpr multiplies(const Args&... args)
-      : args{args...}
+      : operation_interface<multiplies>{args...}
   {}
-
-  friend auto operator<=>(const multiplies&, const multiplies&) = default;
 
   template <term... Ts>
   [[nodiscard]]
@@ -37,6 +35,7 @@ struct multiplies
   }
 
   template <term_promotable T>
+    requires (not detail::is_specialization_of_v<T, multiplies>)
   [[nodiscard]]
   friend constexpr auto operator*(const multiplies& x, const T& y)
   {
@@ -44,6 +43,7 @@ struct multiplies
   }
 
   template <term_promotable T>
+    requires (not detail::is_specialization_of_v<T, multiplies>)
   [[nodiscard]]
   friend constexpr auto operator*(const T& x, const multiplies& y)
   {

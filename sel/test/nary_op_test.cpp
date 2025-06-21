@@ -109,4 +109,28 @@ auto main() -> int
 
     return expect(true);
   };
+
+  "nary op of nary op ..."_ctest = [] {
+    return expect(eq(
+        sel::plus{sel::multiplies{sel::plus{a, b}, x}, y},  //
+        (((a + b) * x) + y)
+    ));
+  };
+
+  "can define nested nary ops with only 1 argument"_ctest = [] {
+    auto _ = sel::plus{sel::multiplies{sel::constant{1}}};
+    return expect(true);
+  };
+
+  "can define the same nested nary op with only 1 argument"_ctest = [] {
+    auto _ = sel::plus{sel::plus{sel::constant{1}}};
+    return expect(true);
+  };
+
+  "expression has normal operator precedence"_ctest = [] {
+    return expect(eq(
+        sel::plus{sel::multiplies{a, x}, sel::multiplies{b, y}},  //
+        a * x + b * y
+    ));
+  };
 }
