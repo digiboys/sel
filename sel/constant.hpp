@@ -1,12 +1,11 @@
 #pragma once
 
 #include "sel/contract.hpp"
+#include "sel/leaf.hpp"
 #include "sel/strongly_ordered.hpp"
-#include "sel/term.hpp"
 
 #include <compare>
 #include <concepts>
-#include <format>
 #include <type_traits>
 
 namespace sel {
@@ -14,7 +13,7 @@ namespace sel {
 /// symbol that represents a specified quantity in an expression
 template <class T>
   requires std::signed_integral<T> or std::floating_point<T>
-class constant : public term_base
+class constant : public leaf_base<constant<T>>
 {
   T value_{};
 
@@ -80,15 +79,3 @@ public:
 };
 
 }  // namespace sel
-
-template <class T, class Char>
-struct ::std::formatter<::sel::constant<T>, Char> : std::formatter<T, Char>
-{
-  template <class O>
-  constexpr auto format(
-      const ::sel::constant<T>& x, std::basic_format_context<O, Char>& ctx
-  ) const
-  {
-    return std::format_to(ctx.out(), "{}", x.value());
-  }
-};

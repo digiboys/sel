@@ -1,18 +1,15 @@
 #pragma once
 
 #include "sel/contract.hpp"
-#include "sel/term.hpp"
+#include "sel/leaf.hpp"
 
-#include <compare>
-#include <format>
 #include <string>
-#include <string_view>
 #include <utility>
 
 namespace sel {
 
 /// symbol that represents an unspecified quantity in an expression
-class variable : public term_base
+class variable : public leaf_base<variable>
 {
   std::string value_{};
 
@@ -31,21 +28,7 @@ public:
     return std::forward<Self>(self).value_;
   }
 
-  friend auto operator<=>(const variable&, const variable&)
-      -> std::strong_ordering = default;
+  friend auto operator<=>(const variable&, const variable&) = default;
 };
 
 }  // namespace sel
-
-template <class Char>
-struct ::std::formatter<::sel::variable, Char>
-    : std::formatter<std::string_view, Char>
-{
-  template <class O>
-  constexpr auto format(
-      const ::sel::variable& x, std::basic_format_context<O, Char>& ctx
-  ) const
-  {
-    return std::format_to(ctx.out(), "{}", x.value());
-  }
-};
