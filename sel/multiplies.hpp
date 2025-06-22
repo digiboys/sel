@@ -19,7 +19,7 @@ struct multiplies : operation_interface<multiplies<Args...>>
 {
   using formatter = detail::infix_operation_formatter<"*", Args...>;
 
-  constexpr multiplies(const Args&... args)
+  constexpr explicit multiplies(const Args&... args)
       : operation_interface<multiplies>{args...}
   {}
 

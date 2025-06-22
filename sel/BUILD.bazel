@@ -77,6 +77,21 @@ cc_library(
 )
 
 cc_library(
+    name = "tree",
+    hdrs = ["tree.hpp"],
+    deps = [
+        ":constant",
+        ":leaf",
+        ":multiplies",
+        ":operation",
+        ":plus",
+        ":variable",
+        "//sel/detail:tuple_ref",
+        "//sel/detail:tuple_transform_reduce",
+    ],
+)
+
+cc_library(
     name = "variable",
     hdrs = ["variable.hpp"],
     deps = [

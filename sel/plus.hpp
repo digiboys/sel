@@ -19,7 +19,7 @@ struct plus : operation_interface<plus<Args...>>
 {
   using formatter = detail::infix_operation_formatter<"+", Args...>;
 
-  constexpr plus(const Args&... args)
+  constexpr explicit plus(const Args&... args)
       : operation_interface<plus>{args...}
   {}
 
