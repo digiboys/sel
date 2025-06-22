@@ -14,6 +14,16 @@ cc_library(
 )
 
 cc_library(
+    name = "tuple_ref",
+    hdrs = ["tuple_ref.hpp"],
+)
+
+cc_library(
+    name = "tuple_transform_reduce",
+    hdrs = ["tuple_transform_reduce.hpp"],
+)
+
+cc_library(
     name = "string_literal",
     hdrs = ["string_literal.hpp"],
 )
