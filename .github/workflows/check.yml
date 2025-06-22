@@ -52,10 +52,12 @@ jobs:
     - uses: ./.github/actions/ci-env-setup
       with:
         buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
+        external-cache-key: ${{ runner.os }}-local-config-cc
     - id: query
       run: |
         targets=$(\
           bazel cquery \
+            --config=local-config-cc \
             --output starlark \
             --starlark:expr='repr(target).split(" ")[-1].removesuffix(">") if "CcInfo" in providers(target).keys() and not repr(target).startswith("<alias") else ""' \
             -- \
