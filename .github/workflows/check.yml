@@ -107,6 +107,7 @@ jobs:
       - lint
       - coverage
     steps:
+    - uses: Kesin11/actions-timeline@v2
     - uses: re-actors/alls-green@release/v1
       with:
         jobs: ${{ toJSON(needs) }}
