@@ -30,6 +30,12 @@ cc_library(
 )
 
 cc_library(
+    name = "leaf",
+    hdrs = ["leaf.hpp"],
+    deps = [":strongly_ordered"],
+)
+
+cc_library(
     name = "operation",
     hdrs = ["operation.hpp"],
     deps = [":strongly_ordered"],
@@ -56,8 +62,8 @@ cc_library(
     name = "term",
     hdrs = ["term.hpp"],
     deps = [
+        ":leaf",
         ":operation",
-        ":strongly_ordered",
     ],
 )
 
