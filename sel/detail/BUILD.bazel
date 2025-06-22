@@ -19,6 +19,11 @@ cc_library(
 )
 
 cc_library(
+    name = "tuple_transform",
+    hdrs = ["tuple_transform.hpp"],
+)
+
+cc_library(
     name = "tuple_transform_reduce",
     hdrs = ["tuple_transform_reduce.hpp"],
 )
