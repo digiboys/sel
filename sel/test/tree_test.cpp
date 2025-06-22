@@ -36,6 +36,7 @@ auto main() -> int
   "trees are comparable"_ctest = [] {
     return expect(
         eq(sel::tree{x + a}, sel::tree{x + a}) and      //
+        ne(sel::tree{x + a + b}, sel::tree{x + a}) and  //
         ne(sel::tree{x + b}, sel::tree{x + a}) and      //
         ne(sel::tree{x * a}, sel::tree{x + a}) and      //
         eq(sel::tree{a * x + b}, sel::tree{a * x + b})  //
