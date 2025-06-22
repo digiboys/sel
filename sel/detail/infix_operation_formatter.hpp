@@ -10,23 +10,23 @@
 
 namespace sel::detail {
 
-/// formatter for n-ary operations
+/// formatter for infix operations
 /// @tparam delim infix symbol between operands
 /// @tparam Args operand types
 ///
 template <string_literal delim, class... Args>
-struct nary_op_formatter
+struct infix_operation_formatter
 {
   // NOLINTNEXTLINE(cppcoreguidelines-avoid-const-or-ref-data-members)
   const std::tuple<Args...>& args;
 
-  /// implicit constructor from an n-ary operation value
+  /// implicit constructor from an operation
   ///
   template <class T>
     requires requires (const T& value) {
       { value.args } -> std::same_as<const std::tuple<Args...>&>;
     }
-  constexpr nary_op_formatter(const T& value)
+  constexpr infix_operation_formatter(const T& value)
       : args{value.args}
   {}
 };
@@ -34,7 +34,8 @@ struct nary_op_formatter
 }  // namespace sel::detail
 
 template <auto delim, class... Args, class Char>
-struct ::std::formatter<sel::detail::nary_op_formatter<delim, Args...>, Char>
+struct ::std::
+    formatter<sel::detail::infix_operation_formatter<delim, Args...>, Char>
 {
   template <bool first>
   static constexpr auto fmt = [] {
@@ -52,7 +53,7 @@ struct ::std::formatter<sel::detail::nary_op_formatter<delim, Args...>, Char>
 
   template <class O>
   constexpr auto format(
-      ::sel::detail::nary_op_formatter<delim, Args...> expr,
+      ::sel::detail::infix_operation_formatter<delim, Args...> expr,
       std::basic_format_context<O, Char>& ctx
   ) const
   {
