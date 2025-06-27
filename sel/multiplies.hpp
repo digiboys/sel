@@ -11,12 +11,21 @@
 
 namespace sel {
 
+namespace op {
+/// tag type denoting the `multiplies` operation
+struct multiplies
+{
+  static constexpr auto is_valid_arity = [](std::size_t n) { return n != 0; };
+};
+}  // namespace op
+
 /// associative and commutative n-ary multiples operation
 ///
 template <term... Args>
-  requires (sizeof...(Args) != 0)
+  requires (op::multiplies::is_valid_arity(sizeof...(Args)))
 struct multiplies : operation_interface<multiplies<Args...>>
 {
+  using op_tag = op::multiplies;
   using formatter = detail::infix_operation_formatter<"*", Args...>;
 
   constexpr explicit multiplies(const Args&... args)
@@ -58,10 +67,5 @@ constexpr auto operator*(const T1& x, const T2& y)
 {
   return multiplies{to_term(x), to_term(y)};
 }
-
-namespace op {
-/// tag type denoting the `multiplies` operation
-using multiplies = operation_tag<multiplies>;
-}  // namespace op
 
 }  // namespace sel
