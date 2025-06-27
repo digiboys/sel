@@ -58,4 +58,9 @@ constexpr auto operator+(const T1& x, const T2& y)
   return plus{to_term(x), to_term(y)};
 }
 
+namespace op {
+/// tag type denoting the `plus` operation
+using plus = operation_tag<plus>;
+}  // namespace op
+
 }  // namespace sel

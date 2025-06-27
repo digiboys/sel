@@ -59,4 +59,9 @@ constexpr auto operator*(const T1& x, const T2& y)
   return multiplies{to_term(x), to_term(y)};
 }
 
+namespace op {
+/// tag type denoting the `multiplies` operation
+using multiplies = operation_tag<multiplies>;
+}  // namespace op
+
 }  // namespace sel

@@ -81,10 +81,12 @@ cc_library(
     hdrs = ["tree.hpp"],
     deps = [
         ":constant",
+        ":contract",
         ":leaf",
         ":multiplies",
         ":operation",
         ":plus",
+        ":term",
         ":variable",
         "//sel/detail:tuple_ref",
         "//sel/detail:tuple_transform_reduce",

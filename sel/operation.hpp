@@ -3,6 +3,7 @@
 #include "sel/strongly_ordered.hpp"
 
 #include <concepts>
+#include <cstddef>
 #include <format>
 #include <tuple>
 
@@ -11,12 +12,18 @@ namespace sel {
 template <class>
 struct operation_interface;
 
+template <template <class...> class op>
+struct operation_tag
+{};
+
 /// deriving from `operation_interface` enables types to model `operation`
 template <template <class...> class op, class... Args>
   requires (std::copyable<Args> and ...) and  //
            (strongly_ordered<Args> and ...)
 struct operation_interface<op<Args...>>
 {
+  using op_tag = operation_tag<op>;
+
   std::tuple<Args...> args;
 
   constexpr operation_interface(const Args&... args)
