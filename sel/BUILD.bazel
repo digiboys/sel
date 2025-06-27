@@ -77,6 +77,16 @@ cc_library(
 )
 
 cc_library(
+    name = "transform",
+    hdrs = ["transform.hpp"],
+    deps = [
+        ":tree",
+        "//sel/detail:tuple_transform",
+    ],
+)
+
+
+cc_library(
     name = "tree",
     hdrs = ["tree.hpp"],
     deps = [

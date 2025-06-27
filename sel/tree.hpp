@@ -30,6 +30,8 @@ class tree
   template <class OpTag>
   struct op_node
   {
+    using op_tag_type = OpTag;
+
     std::vector<tree> args;
 
     template <class... Args>
@@ -68,7 +70,7 @@ public:
   /// construct from a `leaf`
   template <class T>
     requires leaf<std::remove_cvref_t<T>>
-  constexpr explicit tree(T&& value)
+  constexpr tree(T&& value)
       : value_{std::forward<T>(value)}
   {}
 
@@ -76,7 +78,7 @@ public:
   template <class Op>
     requires (not std::same_as<tree, std::remove_cvref_t<Op>>) and
              operation<std::remove_cvref_t<Op>>
-  constexpr explicit tree(Op&& expr)
+  constexpr tree(Op&& expr)
       : value_{std::make_from_tuple<op_node<typename std::remove_cvref_t<
             Op>::op_tag>>(std::forward<Op>(expr).args)}
   {}
@@ -104,6 +106,15 @@ public:
       : value_{std::in_place_type<op_node<OpTag>>, std::from_range, args}
   {}
   /// @}
+
+  /// apply a visitor to the tree node
+  template <class Self>
+  [[nodiscard]]
+  constexpr auto
+  node(this Self&& self) -> decltype(std::forward<Self>(self).value_)
+  {
+    return std::forward<Self>(self).value_;
+  }
 
   /// compare a `tree` with a `leaf`
   [[nodiscard]]
