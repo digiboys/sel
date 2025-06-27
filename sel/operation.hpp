@@ -12,18 +12,12 @@ namespace sel {
 template <class>
 struct operation_interface;
 
-template <template <class...> class op>
-struct operation_tag
-{};
-
 /// deriving from `operation_interface` enables types to model `operation`
 template <template <class...> class op, class... Args>
   requires (std::copyable<Args> and ...) and  //
            (strongly_ordered<Args> and ...)
 struct operation_interface<op<Args...>>
 {
-  using op_tag = operation_tag<op>;
-
   std::tuple<Args...> args;
 
   constexpr operation_interface(const Args&... args)
@@ -43,7 +37,10 @@ struct operation_interface<op<Args...>>
 /// Additionally, all valid values of the type must be totally ordered in order
 /// to allow reordering of terms in an expression.
 template <class T>
-concept operation =                          //
+concept operation =  //
+    requires (std::size_t n) {
+      { T::op_tag::is_valid_arity(n) } -> std::convertible_to<bool>;
+    } and                                    //
     (not std::default_initializable<T>) and  //
     std::copyable<T> and                     //
     strongly_ordered<T> and                  //

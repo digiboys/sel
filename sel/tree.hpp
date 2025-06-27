@@ -44,7 +44,7 @@ class tree
 
     constexpr op_node(std::from_range_t, std::ranges::sized_range auto& values)
     {
-      SEL_PRECONDITION(std::ranges::size(values) != 0);
+      SEL_PRECONDITION(OpTag::is_valid_arity(std::ranges::size(values)));
       args.reserve(std::ranges::size(values));
 
       for (auto&& value : values) {
@@ -90,7 +90,7 @@ public:
   {}
 
   template <class OpTag, class... Args>
-    requires (sizeof...(Args) != 0)
+    requires (OpTag::is_valid_arity(sizeof...(Args)))
   constexpr tree(std::in_place_type_t<OpTag>, Args&&... args)
       : value_{std::in_place_type<op_node<OpTag>>, std::forward<Args>(args)...}
   {}
@@ -124,7 +124,8 @@ public:
   [[nodiscard]]
   constexpr auto operator==(const op<Args...>& other) const -> bool
   {
-    if (const auto value = std::get_if<op_node<operation_tag<op>>>(&value_)) {
+    if (const auto value =
+            std::get_if<op_node<typename op<Args...>::op_tag>>(&value_)) {
       if (value->args.size() == sizeof...(Args)) {
         return detail::tuple_transform_reduce(
             detail::tuple_ref<sizeof...(Args)>(value->args),
