@@ -33,6 +33,8 @@ bazel_dep(
     version = "0.12.0",
     dev_dependency = True,
 )
+bazel_dep(name = "rules_nixpkgs_core", dev_dependency = True)
+bazel_dep(name = "rules_nixpkgs_cc", dev_dependency = True)
 bazel_dep(
     name = "rules_shell",
     version = "0.4.1",
@@ -105,8 +107,6 @@ llvm.toolchain(
 )
 use_repo(llvm, "llvm_toolchain")
 
-register_toolchains("@llvm_toolchain//:all")
-
 HEDRON_COMPILE_COMMANDS_COMMIT = "4f28899228fb3ad0126897876f147ca15026151e"
 
 archive_override(
@@ -136,4 +136,58 @@ native_binary(
     integrity = "sha256-mHAxrVUoyKdG1LUrOAvBv/5BLeHyucK6UiSZVmjjJAs=",
     strip_prefix = "lcov-1.16",
     url = "https://github.com/linux-test-project/lcov/releases/download/v1.16/lcov-1.16.tar.gz",
+)
+
+# rules_nixpkgs_cc isn't available from the BCR so we obtain both *_core and
+# *_cc from the same archive
+[
+    archive_override(
+        module_name = "rules_nixpkgs_" + submodule,
+        integrity = "sha256-3C7HbeS+pnFxNwM6Ez2W+edkjAOeQfaCnUPa+1UJT1s=",
+        patch_cmds = [
+            "mv {subdirectory} tmp_subdirectory".format(subdirectory = subdirectory),
+            "find . -mindepth 1 -maxdepth 1 ! -name tmp_subdirectory -exec rm -rf {} +",
+            "mv tmp_subdirectory/* . && rm -rf tmp_subdirectory",
+        ],
+        strip_prefix = "rules_nixpkgs-697daa3881c3ff31076ca17860f3242db668b747",
+        urls = [
+            "https://github.com/oliverlee/rules_nixpkgs/archive/697daa3881c3ff31076ca17860f3242db668b747.tar.gz",
+        ],
+    )
+    for submodule, subdirectory in [
+        ("core", "core"),
+        ("cc", "toolchains/cc"),
+    ]
+]
+
+# use a flake to set the nixpkgs repository
+# https://github.com/tweag/rules_nixpkgs/blob/cb0f9be1798131ea4336fd02b850edeeb1972680/examples/toolchains/cc/MODULE.bazel#L23-L50
+# https://github.com/tweag/rules_nixpkgs/blob/cb0f9be1798131ea4336fd02b850edeeb1972680/core/extensions/repository.bzl#L286-L289
+nix_repo = use_extension(
+    "@rules_nixpkgs_core//extensions:repository.bzl",
+    "nix_repo",
+    dev_dependency = True,
+)
+nix_repo.flake(
+    name = "nixpkgs",
+    lock_file = "//tools/nix:flake.lock",
+)
+use_repo(
+    nix_repo,
+    "nixpkgs",
+)
+
+cc_configure = use_extension(
+    "//toolchain:extension.bzl",
+    "cc_configure",
+    dev_dependency = True,
+)
+use_repo(
+    cc_configure,
+    "gcc_toolchain",
+)
+
+register_toolchains(
+    "@llvm_toolchain//:all",
+    "@gcc_toolchain//:all",
 )
