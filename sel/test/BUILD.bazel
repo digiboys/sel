@@ -24,6 +24,21 @@ cc_test(
 )
 
 cc_test(
+    name = "transform_test",
+    size = "small",
+    srcs = ["transform_test.cpp"],
+    deps = [
+        "//sel:tree",
+        "//sel:transform",
+        "//sel:constant",
+        "//sel:variable",
+        "//sel:plus",
+        "//sel:multiplies",
+        "@skytest",
+    ],
+)
+
+cc_test(
     name = "tree_test",
     size = "small",
     srcs = ["tree_test.cpp"],
