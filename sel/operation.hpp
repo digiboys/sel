@@ -50,5 +50,5 @@ concept operation =  //
 
 template <class Op, class Char>
   requires std::derived_from<Op, ::sel::operation_interface<Op>>
-struct ::std::formatter<Op, Char> : std::formatter<typename Op::formatter, Char>
+struct std::formatter<Op, Char> : std::formatter<typename Op::formatter, Char>
 {};
