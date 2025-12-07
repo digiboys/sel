@@ -49,11 +49,11 @@ bazel_dep(
     dev_dependency = True,
 )
 
-TOOLCHAINS_LLVM_COMMIT = "f1048a300d0be607c7f5092e323bc15b7ef8d8af"
+TOOLCHAINS_LLVM_COMMIT = "ace6215bbfe8a76884646b2458b42380e2201607"
 
 archive_override(
     module_name = "toolchains_llvm",
-    integrity = "sha256-g9hKi+nAtM1ddbK9Ppkrx8LyY7K/Op3vSwopp2Kh85Y=",
+    integrity = "sha256-Z2J+zsJsLvi7UjZY50F4Ub4M/5oYpUFSlZeAhiAePC4=",
     strip_prefix = "toolchains_llvm-{commit}".format(
         commit = TOOLCHAINS_LLVM_COMMIT,
     ),
@@ -94,6 +94,12 @@ llvm.toolchain(
             "-stdlib=libc++",
             "-Wshadow",
         ] + COMMON_CXX_WARNINGS + CXX_STANDARD,
+    },
+    extra_coverage_compile_flags = {
+        "": [
+            # https://github.com/bazelbuild/bazel/issues/14970#issuecomment-1894565761
+            "-ffile-compilation-dir=.",
+        ],
     },
     llvm_version = "20.1.4",
 )
