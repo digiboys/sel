@@ -284,6 +284,8 @@
     "https://raw.githubusercontent.com/digiboys/bazel-registry/main/modules/rules_license/0.0.7/MODULE.bazel": "not found",
     "https://raw.githubusercontent.com/digiboys/bazel-registry/main/modules/rules_license/1.0.0/MODULE.bazel": "not found",
     "https://raw.githubusercontent.com/digiboys/bazel-registry/main/modules/rules_multirun/0.12.0/MODULE.bazel": "not found",
+    "https://raw.githubusercontent.com/digiboys/bazel-registry/main/modules/rules_multitransition/0.0.0/MODULE.bazel": "2fc75621b0a90f9a9daf18966e7a8e263ce2f30f7f5327cc112f885aba3e7a07",
+    "https://raw.githubusercontent.com/digiboys/bazel-registry/main/modules/rules_multitransition/0.0.0/source.json": "9241170e4051e14d4e8d3a4596e8d28ce4d30318aa0d9d5d7e450bbd30433898",
     "https://raw.githubusercontent.com/digiboys/bazel-registry/main/modules/rules_pkg/0.7.0/MODULE.bazel": "not found",
     "https://raw.githubusercontent.com/digiboys/bazel-registry/main/modules/rules_pkg/1.0.1/MODULE.bazel": "not found",
     "https://raw.githubusercontent.com/digiboys/bazel-registry/main/modules/rules_proto/4.0.0/MODULE.bazel": "not found",

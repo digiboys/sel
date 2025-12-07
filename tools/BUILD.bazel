@@ -32,6 +32,7 @@ sh_binary(
     name = "clang-format.check",
     srcs = ["clang-format.bash"],
     args = [
+        "--@rules_multitransition//config:multitransition_test=False",
         "--aspects=@bazel_clang_format//:defs.bzl%check_aspect",
         "--output_groups=report",
         "--keep_going",
@@ -43,6 +44,7 @@ sh_binary(
     name = "clang-format",
     srcs = ["clang-format.bash"],
     args = [
+        "--@rules_multitransition//config:multitransition_test=False",
         "--aspects=@bazel_clang_format//:defs.bzl%fix_aspect",
         "--output_groups=report",
         "--keep_going",
@@ -78,6 +80,7 @@ echo "cd \\$$BUILD_WORKSPACE_DIRECTORY" >> $@
 echo "exec bazelisk build {options} \\$${{@:-//...}}" >> $@
 """.format(
         options = " ".join([
+            "--@rules_multitransition//config:multitransition_test=False",
             "--aspects=@rules_clang_tidy//:aspects.bzl%check",
             "--output_groups=report",
             "--keep_going",
@@ -111,7 +114,10 @@ refresh_compile_commands(
     name = "compile_commands",
     tags = ["manual"],
     targets = {
-        "//sel/...": "--extra_toolchains=@llvm_toolchain//:all",
+        "//sel/...": " ".join([
+            "--@rules_multitransition//config:multitransition_test=False",
+            "--extra_toolchains=@llvm_toolchain//:all",
+        ]),
     },
 )
 
@@ -155,6 +161,7 @@ sh_binary(
     name = "coverage",
     srcs = [":coverage.bash"],
     args = [
+        "--@rules_multitransition//config:multitransition_test=False",
         "--instrumentation_filter=//sel",
         "//...",
     ],

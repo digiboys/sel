@@ -33,6 +33,11 @@ bazel_dep(
     version = "0.12.0",
     dev_dependency = True,
 )
+bazel_dep(
+    name = "rules_multitransition",
+    version = "0.0.1",
+    dev_dependency = True,
+)
 bazel_dep(name = "rules_nixpkgs_core", dev_dependency = True)
 bazel_dep(name = "rules_nixpkgs_cc", dev_dependency = True)
 bazel_dep(
