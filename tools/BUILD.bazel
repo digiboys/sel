@@ -7,22 +7,25 @@ buildifier(
     name = "buildifier.check",
     lint_mode = "warn",
     mode = "check",
+    tags = ["manual"],
 )
 
 buildifier(
     name = "buildifier",
     lint_mode = "warn",
     mode = "fix",
+    tags = ["manual"],
 )
 
 genrule(
     name = "gen-clang-format",
     outs = ["clang-format.bash"],
     cmd = """
-echo "#!/bin/bash" > $@
+echo "#!/usr/bin/env bash" > $@
 echo "cd \\$$BUILD_WORKSPACE_DIRECTORY" >> $@
 echo "exec bazelisk build \\$$@ //..." >> $@
 """,
+    tags = ["manual"],
 )
 
 sh_binary(
@@ -33,6 +36,7 @@ sh_binary(
         "--output_groups=report",
         "--keep_going",
     ],
+    tags = ["manual"],
 )
 
 sh_binary(
@@ -44,6 +48,7 @@ sh_binary(
         "--keep_going",
         "--use_action_cache=false",
     ],
+    tags = ["manual"],
 )
 
 multirun(
@@ -52,6 +57,7 @@ multirun(
         ":buildifier.check",
         ":clang-format.check",
     ],
+    tags = ["manual"],
 )
 
 multirun(
@@ -60,13 +66,14 @@ multirun(
         ":buildifier",
         ":clang-format",
     ],
+    tags = ["manual"],
 )
 
 genrule(
     name = "gen-clang-tidy",
     outs = ["clang-tidy.bash"],
     cmd = """
-echo "#!/bin/bash" > $@
+echo "#!/usr/bin/env bash" > $@
 echo "cd \\$$BUILD_WORKSPACE_DIRECTORY" >> $@
 echo "exec bazelisk build {options} \\$${{@:-//...}}" >> $@
 """.format(
@@ -77,6 +84,7 @@ echo "exec bazelisk build {options} \\$${{@:-//...}}" >> $@
             "--verbose_failures",
         ]),
     ),
+    tags = ["manual"],
 )
 
 # lint all targets with default options
@@ -90,15 +98,18 @@ echo "exec bazelisk build {options} \\$${{@:-//...}}" >> $@
 sh_binary(
     name = "clang-tidy",
     srcs = ["clang-tidy.bash"],
+    tags = ["manual"],
 )
 
 alias(
     name = "lint",
     actual = ":clang-tidy",
+    tags = ["manual"],
 )
 
 refresh_compile_commands(
     name = "compile_commands",
+    tags = ["manual"],
     targets = {
         "//sel/...": "--extra_toolchains=@llvm_toolchain//:all",
     },
@@ -109,7 +120,7 @@ genrule(
     srcs = ["@lcov//:genhtml"],
     outs = ["coverage.bash"],
     cmd = """
-echo "#!/bin/bash" > $@
+echo "#!/usr/bin/env bash" > $@
 echo "set -euo pipefail" >> $@
 echo "" >> $@
 echo "cd \\$$BUILD_WORKSPACE_DIRECTORY" >> $@
@@ -137,6 +148,7 @@ echo "echo file://{html}" >> $@
         ]),
         report = "\\$${COVERAGE_DIR}/_coverage_report.dat",
     ),
+    tags = ["manual"],
 )
 
 sh_binary(
@@ -147,6 +159,7 @@ sh_binary(
         "//...",
     ],
     data = ["@lcov//:genhtml"],
+    tags = ["manual"],
 )
 
 _coverage_open_script = """
@@ -171,4 +184,5 @@ genrule(
         "@platforms//os:linux": _coverage_open_script.format(cmd = "xdg-open"),
     }),
     executable = True,
+    tags = ["manual"],
 )
