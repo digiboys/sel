@@ -13,6 +13,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        toolchain:
+          - 'clang'
+          - 'gcc'
         compilation_mode:
           - 'fastbuild'
           - 'opt'
@@ -28,6 +31,7 @@ jobs:
     - run: |
         bazel test \
           --compilation_mode=${{ matrix.compilation_mode }} \
+          --config=${{ matrix.toolchain }} \
           //...
 
   format:
