@@ -35,7 +35,7 @@ concept leaf =                         //
 
 template <class L, class Char>
   requires std::derived_from<L, ::sel::leaf_base<L>>
-struct ::std::formatter<L, Char>
+struct std::formatter<L, Char>
 {
   constexpr auto parse(std::basic_format_parse_context<Char>& ctx)
   {

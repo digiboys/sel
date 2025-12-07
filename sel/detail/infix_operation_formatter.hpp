@@ -34,7 +34,7 @@ struct infix_operation_formatter
 }  // namespace sel::detail
 
 template <auto delim, class... Args, class Char>
-struct ::std::
+struct std::
     formatter<sel::detail::infix_operation_formatter<delim, Args...>, Char>
 {
   template <bool first>

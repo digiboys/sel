@@ -109,13 +109,16 @@ public:
   [[nodiscard]]
   constexpr auto operator==(const leaf auto& other) const -> bool
   {
-    return value_.visit([&other](const auto& value) {
-      if constexpr (requires { bool(value == other); }) {
-        return value == other;
-      } else {
-        return false;
-      }
-    });
+    return std::visit(
+        [&other](const auto& value) -> bool {
+          if constexpr (requires { bool(value == other); }) {
+            return value == other;
+          } else {
+            return false;
+          }
+        },
+        value_
+    );
   }
 
   /// compare a `tree` with an `operation`
