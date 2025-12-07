@@ -13,13 +13,13 @@ jobs:
       actions: write
       contents: read
     steps:
-    - name: cleanup caches
-      # https://github.com/actions/cache/blob/main/tips-and-workarounds.md#force-deletion-of-caches-overriding-default-cache-eviction-policy
-      env:
-        GH_TOKEN: ${{ github.token }}
-      run: |
-        gh cache delete --all --succeed-on-no-caches \
-          --repo ${{ github.repository }}
+      - name: cleanup caches
+        # https://github.com/actions/cache/blob/main/tips-and-workarounds.md#force-deletion-of-caches-overriding-default-cache-eviction-policy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh cache delete --all --succeed-on-no-caches \
+            --repo ${{ github.repository }}
 
   refresh-workflow-external-cache:
     needs:
@@ -28,41 +28,31 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - config: 'default'
-            os: 'ubuntu-latest'
-          - config: 'default'
-            os: 'macos-latest'
-          - config: 'local-config-cc'
-            os: 'ubuntu-latest'
+          - os: "ubuntu-latest"
+          - os: "macos-latest"
     runs-on: ${{ matrix.os }}
     permissions:
       actions: write
       contents: read
     steps:
-    - uses: actions/checkout@v4
-    - uses: ./.github/actions/ci-env-setup
-      with:
-        buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
-    - name: fetch external deps
-      if: matrix.config == 'default'
-      run: |
-        bazel vendor \
-          --vendor_dir=~/bazel_external_deps \
-          //sel/...
-    - name: fetch external deps
-      if: matrix.config == 'local-config-cc'
-      run: |
-        bazel vendor \
-          --vendor_dir=~/bazel_external_deps \
-          --config=local-config-cc \
-          //...
-    - name: print vendored external deps
-      run: |
-        ls -al ~/bazel_external_deps/
-        du -sh ~/bazel_external_deps/
-    - name: save to actions/cache
-      uses: actions/cache/save@v4
-      with:
-        path: |
-          ~/bazel_external_deps
-        key: bazel-external-cache-${{ runner.os }}-${{ matrix.config }}
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/ci-env-setup
+        with:
+          buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
+
+      - name: fetch external deps
+        run: |
+          bazel vendor \
+            --vendor_dir=~/bazel_external_deps \
+            --curses=yes \
+            //...
+
+      - uses: nix-community/cache-nix-action/save@v6
+        with:
+          paths: |
+            ~/bazel_external_deps
+            /nix
+            ~/.cache/nix
+            ~root/.cache/nix
+          primary-key: bazel-external-cache-${{ runner.os }}-default

@@ -17,6 +17,8 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - uses: nixbuild/nix-quick-install-action@v32
+
     - name: setup ci bazelrc
       shell: bash
       run: |
@@ -29,8 +31,12 @@ runs:
         echo "common --vendor_dir=$HOME/bazel_external_deps" >> ~/.bazelrc
 
     - name: restore bazel vendored external deps
-      uses: actions/cache/restore@v4
+      uses: nix-community/cache-nix-action/restore@v6
       with:
-        path: |
+        paths: |
           ~/bazel_external_deps
-        key: bazel-external-cache-${{ inputs.external-cache-key }}
+          /nix
+          ~/.cache/nix
+          ~root/.cache/nix
+        primary-key: bazel-external-cache-${{ inputs.external-cache-key }}
+        save: false
