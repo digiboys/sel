@@ -64,49 +64,6 @@ archive_override(
     )],
 )
 
-CXX_STANDARD = ["-std=c++26"]
-
-COMMON_CXX_WARNINGS = [
-    "-Werror",
-    "-Wall",
-    "-Wextra",
-    "-Wpedantic",
-    "-Wconversion",
-    "-Wnon-virtual-dtor",
-    "-Wold-style-cast",
-    "-Wcast-align",
-    "-Wunused",
-    "-Woverloaded-virtual",
-    "-Wmisleading-indentation",
-    "-Wnull-dereference",
-    "-Wdouble-promotion",
-    "-Wformat=2",
-    "-Wimplicit-fallthrough",
-    "-Wdocumentation-unknown-command",
-    "-Wextra-semi",
-    "-Wunreachable-code",
-    "-Wunreachable-code-return",
-]
-
-llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm", dev_dependency = True)
-llvm.toolchain(
-    cxx_flags = {
-        "": [
-            "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE",
-            "-stdlib=libc++",
-            "-Wshadow",
-        ] + COMMON_CXX_WARNINGS + CXX_STANDARD,
-    },
-    extra_coverage_compile_flags = {
-        "": [
-            # https://github.com/bazelbuild/bazel/issues/14970#issuecomment-1894565761
-            "-ffile-compilation-dir=.",
-        ],
-    },
-    llvm_version = "20.1.4",
-)
-use_repo(llvm, "llvm_toolchain")
-
 HEDRON_COMPILE_COMMANDS_COMMIT = "4f28899228fb3ad0126897876f147ca15026151e"
 
 archive_override(
@@ -185,6 +142,7 @@ cc_configure = use_extension(
 use_repo(
     cc_configure,
     "gcc_toolchain",
+    "llvm_toolchain",
 )
 
 register_toolchains(

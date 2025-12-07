@@ -322,12 +322,61 @@
   "moduleExtensions": {
     "//toolchain:extension.bzl%cc_configure": {
       "general": {
-        "bzlTransitiveDigest": "hterYvXdvgfjbIFiJer8T1ZavUKQNScLnLft4yFqGy8=",
+        "bzlTransitiveDigest": "T8TvWMtW+826pJHXJ5c/E9GR8DKq7wAqV49CRVG5wPk=",
         "usagesDigest": "gWkWJW9wYgAwT1PwmdynmHH5Oc+xwDFBSn+qAcn3Ntw=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
         "envVariables": {},
         "generatedRepoSpecs": {
+          "llvm_toolchain_llvm": {
+            "repoRuleId": "@@toolchains_llvm+//toolchain:rules.bzl%llvm",
+            "attributes": {
+              "llvm_version": "20.1.4",
+              "llvm_versions": {
+                "": "20.1.4"
+              }
+            }
+          },
+          "llvm_toolchain": {
+            "repoRuleId": "@@toolchains_llvm+//toolchain:rules.bzl%toolchain",
+            "attributes": {
+              "cxx_flags": {
+                "": [
+                  "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE",
+                  "-std=c++26",
+                  "-stdlib=libc++",
+                  "-Wshadow",
+                  "-Wdocumentation-unknown-command",
+                  "-Wunreachable-code-return",
+                  "-Werror",
+                  "-Wall",
+                  "-Wextra",
+                  "-Wpedantic",
+                  "-Wconversion",
+                  "-Wnon-virtual-dtor",
+                  "-Wold-style-cast",
+                  "-Wcast-align",
+                  "-Wunused",
+                  "-Woverloaded-virtual",
+                  "-Wmisleading-indentation",
+                  "-Wnull-dereference",
+                  "-Wdouble-promotion",
+                  "-Wformat=2",
+                  "-Wimplicit-fallthrough",
+                  "-Wextra-semi",
+                  "-Wunreachable-code"
+                ]
+              },
+              "extra_coverage_compile_flags": {
+                "": [
+                  "-ffile-compilation-dir=."
+                ]
+              },
+              "llvm_versions": {
+                "": "20.1.4"
+              }
+            }
+          },
           "nixpkgs_config_gcc_info": {
             "repoRuleId": "@@rules_nixpkgs_core+//:nixpkgs.bzl%_nixpkgs_package",
             "attributes": {
@@ -371,6 +420,8 @@
                 "compile_flags": [
                   "-D_GLIBCXX_ASSERTIONS",
                   "-fdiagnostics-color",
+                  "-Wno-psabi",
+                  "-Wno-unused-but-set-variable",
                   "-Werror",
                   "-Wall",
                   "-Wextra",
@@ -387,10 +438,7 @@
                   "-Wformat=2",
                   "-Wimplicit-fallthrough",
                   "-Wextra-semi",
-                  "-Wunreachable-code",
-                  "-Wno-psabi",
-                  "-Wno-error=unused-but-set-variable",
-                  "-Wno-unused-but-set-variable"
+                  "-Wunreachable-code"
                 ]
               }
             }
@@ -413,6 +461,21 @@
             "rules_nixpkgs_cc+"
           ],
           [
+            "",
+            "toolchains_llvm",
+            "toolchains_llvm+"
+          ],
+          [
+            "bazel_features+",
+            "bazel_features_globals",
+            "bazel_features++version_extension+bazel_features_globals"
+          ],
+          [
+            "bazel_features+",
+            "bazel_features_version",
+            "bazel_features++version_extension+bazel_features_version"
+          ],
+          [
             "rules_nixpkgs_cc+",
             "bazel_skylib",
             "bazel_skylib+"
@@ -431,6 +494,26 @@
             "rules_nixpkgs_core+",
             "bazel_skylib",
             "bazel_skylib+"
+          ],
+          [
+            "toolchains_llvm+",
+            "bazel_features",
+            "bazel_features+"
+          ],
+          [
+            "toolchains_llvm+",
+            "bazel_skylib",
+            "bazel_skylib+"
+          ],
+          [
+            "toolchains_llvm+",
+            "bazel_tools",
+            "bazel_tools"
+          ],
+          [
+            "toolchains_llvm+",
+            "helly25_bzl",
+            "helly25_bzl+"
           ]
         ]
       }
