@@ -19,6 +19,10 @@ build --@rules_clang_tidy//:config=//:tidy-config
 build:macos --features=-macos_default_link_flags
 build:macos --features=-macos_minimum_os
 
+# avoid local_config_xcode
+common:macos --repo_env="BAZEL_USE_CPP_ONLY_TOOLCHAIN=1"
+common:macos --xcode_version_config=//tools/xcode:host_xcode
+
 build:remote-cache --bes_results_url=https://digiboys.buildbuddy.io/invocation/
 build:remote-cache --bes_backend=grpcs://digiboys.buildbuddy.io
 build:remote-cache --bes_upload_mode=fully_async
