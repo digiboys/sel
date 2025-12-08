@@ -1,8 +1,7 @@
-load("@rules_cc//cc:cc_test.bzl", "cc_test")
+load("//rules:cc_multi_test.bzl", "cc_multi_test")
 
-cc_test(
+cc_multi_test(
     name = "constant_test",
-    size = "small",
     srcs = ["constant_test.cpp"],
     deps = [
         "//sel:constant",
@@ -10,9 +9,8 @@ cc_test(
     ],
 )
 
-cc_test(
+cc_multi_test(
     name = "nary_op_test",
-    size = "small",
     srcs = ["nary_op_test.cpp"],
     deps = [
         "//sel:constant",
@@ -23,9 +21,8 @@ cc_test(
     ],
 )
 
-cc_test(
+cc_multi_test(
     name = "tree_test",
-    size = "small",
     srcs = ["tree_test.cpp"],
     deps = [
         "//sel:constant",
@@ -37,9 +34,8 @@ cc_test(
     ],
 )
 
-cc_test(
+cc_multi_test(
     name = "variable_test",
-    size = "small",
     srcs = ["variable_test.cpp"],
     deps = [
         "//sel:variable",

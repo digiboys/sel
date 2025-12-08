@@ -1,0 +1,7 @@
+def format(target):
+    provides = providers(target).keys()
+
+    if ("CcInfo" in provides and
+        "IncompatiblePlatformProvider" not in provides):
+        return str(target.label).removeprefix("@@")
+    return ""

@@ -1,0 +1,19 @@
+alias(
+    name = "llvm_toolchain",
+    actual = select({
+        "@platforms//os:macos": "@llvm_toolchain//:cc-toolchain-aarch64-darwin",
+        "@platforms//os:linux": "@llvm_toolchain//:cc-toolchain-x86_64-linux",
+    }),
+    tags = ["manual"],
+    visibility = ["//:__subpackages__"],
+)
+
+alias(
+    name = "gcc_toolchain",
+    actual = select({
+        "@platforms//os:macos": "@gcc_toolchain//:cc-toolchain-darwin_arm64",
+        "@platforms//os:linux": "@gcc_toolchain//:cc-toolchain-k8",
+    }),
+    tags = ["manual"],
+    visibility = ["//:__subpackages__"],
+)

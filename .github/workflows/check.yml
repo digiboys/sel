@@ -13,12 +13,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        toolchain:
-          - 'clang'
-          - 'gcc'
-        compilation_mode:
-          - 'fastbuild'
-          - 'opt'
         os:
           - 'ubuntu-latest'
           - 'macos-latest'
@@ -29,10 +23,7 @@ jobs:
       with:
         buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
     - run: |
-        bazel test \
-          --compilation_mode=${{ matrix.compilation_mode }} \
-          --config=${{ matrix.toolchain }} \
-          //...
+        bazel test //...
 
   format:
     runs-on: ubuntu-latest
@@ -58,9 +49,10 @@ jobs:
       run: |
         targets=$(\
           bazel cquery \
+            --@rules_multitransition//config:multitransition_test=False \
             --config=local-config-cc \
-            --output starlark \
-            --starlark:expr='repr(target).split(" ")[-1].removesuffix(">") if "CcInfo" in providers(target).keys() and not repr(target).startswith("<alias") else ""' \
+            --output=starlark \
+            --starlark:file=tools/tidy_targets.cquery \
             -- \
             //... | xargs)
 
