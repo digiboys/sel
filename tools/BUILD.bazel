@@ -1,7 +1,6 @@
 load("@buildifier_prebuilt//:rules.bzl", "buildifier")
 load("@hedron_compile_commands//:refresh_compile_commands.bzl", "refresh_compile_commands")
 load("@rules_multirun//:defs.bzl", "multirun")
-load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 
 buildifier(
     name = "buildifier.check",
@@ -17,41 +16,49 @@ buildifier(
     tags = ["manual"],
 )
 
-genrule(
-    name = "gen-clang-format",
-    outs = ["clang-format.bash"],
-    cmd = """
+[
+    genrule(
+        name = name,
+        outs = [name + ".bash"],
+        cmd = """
 echo "#!/usr/bin/env bash" > $@
 echo "cd \\$$BUILD_WORKSPACE_DIRECTORY" >> $@
-echo "exec bazelisk build \\$$@ //..." >> $@
-""",
-    tags = ["manual"],
-)
-
-sh_binary(
-    name = "clang-format.check",
-    srcs = ["clang-format.bash"],
-    args = [
-        "--@rules_multitransition//config:multitransition_test=False",
-        "--aspects=@bazel_clang_format//:defs.bzl%check_aspect",
-        "--output_groups=report",
-        "--keep_going",
-    ],
-    tags = ["manual"],
-)
-
-sh_binary(
-    name = "clang-format",
-    srcs = ["clang-format.bash"],
-    args = [
-        "--@rules_multitransition//config:multitransition_test=False",
-        "--aspects=@bazel_clang_format//:defs.bzl%fix_aspect",
-        "--output_groups=report",
-        "--keep_going",
-        "--use_action_cache=false",
-    ],
-    tags = ["manual"],
-)
+echo "exec bazelisk build {options} \\$${{@:-//...}}" >> $@
+""".format(
+            options = " ".join(
+                options + [
+                    "--@rules_multitransition//config:multitransition_test=False",
+                    "--output_groups=report",
+                    "--keep_going",
+                ],
+            ),
+        ),
+        executable = True,
+        tags = ["manual"],
+    )
+    for name, options in [
+        (
+            "clang-format",
+            [
+                "--aspects=@bazel_clang_format//:defs.bzl%fix_aspect",
+                "--use_action_cache=false",
+            ],
+        ),
+        (
+            "clang-format.check",
+            [
+                "--aspects=@bazel_clang_format//:defs.bzl%check_aspect",
+            ],
+        ),
+        (
+            "clang-tidy",
+            [
+                "--aspects=@rules_clang_tidy//:aspects.bzl%check",
+                "--verbose_failures",
+            ],
+        ),
+    ]
+]
 
 multirun(
     name = "format.check",
@@ -71,25 +78,6 @@ multirun(
     tags = ["manual"],
 )
 
-genrule(
-    name = "gen-clang-tidy",
-    outs = ["clang-tidy.bash"],
-    cmd = """
-echo "#!/usr/bin/env bash" > $@
-echo "cd \\$$BUILD_WORKSPACE_DIRECTORY" >> $@
-echo "exec bazelisk build {options} \\$${{@:-//...}}" >> $@
-""".format(
-        options = " ".join([
-            "--@rules_multitransition//config:multitransition_test=False",
-            "--aspects=@rules_clang_tidy//:aspects.bzl%check",
-            "--output_groups=report",
-            "--keep_going",
-            "--verbose_failures",
-        ]),
-    ),
-    tags = ["manual"],
-)
-
 # lint all targets with default options
 #  bazel run //tools:lint
 #
@@ -98,12 +86,6 @@ echo "exec bazelisk build {options} \\$${{@:-//...}}" >> $@
 #     --@rules_clang_tidy//:extra-options=--checks='-*,clang-analyzer-core.uninitialized.Assign' \
 #     //test:point_test
 #
-sh_binary(
-    name = "clang-tidy",
-    srcs = ["clang-tidy.bash"],
-    tags = ["manual"],
-)
-
 alias(
     name = "lint",
     actual = ":clang-tidy",
@@ -122,7 +104,7 @@ refresh_compile_commands(
 )
 
 genrule(
-    name = "gen-coverage",
+    name = "coverage",
     srcs = ["@lcov//:genhtml"],
     outs = ["coverage.bash"],
     cmd = """
@@ -131,20 +113,23 @@ echo "set -euo pipefail" >> $@
 echo "" >> $@
 echo "cd \\$$BUILD_WORKSPACE_DIRECTORY" >> $@
 echo "COVERAGE_DIR={cov_dir}" >> $@
-echo "bazelisk coverage \\$${{@:-//...}}" >> $@
-echo "$(execpath @lcov//:genhtml) {options} {report}" >> $@
+echo "bazelisk coverage {coverage_opts} \\$${{@:-//...}}" >> $@
+echo "$(execpath @lcov//:genhtml) {genhtml_opts} {report}" >> $@
 echo "" >> $@
 echo "echo wrote coverage report to" >> $@
 echo "echo file://{html}" >> $@
 """.format(
         cov_dir = "\\$$(bazelisk info output_path)/_coverage",
-        html = "\\$${COVERAGE_DIR}/html/index.html",
-        options = " ".join([
+        coverage_opts = " ".join([
+            "--@rules_multitransition//config:multitransition_test=False",
+            "--instrumentation_filter=//sel",
+        ]),
+        genhtml_opts = " ".join([
             "--output-directory \\$${COVERAGE_DIR}/html",
             "--show-details",
             "--function-coverage",
             "--branch-coverage",
-            "--title zipline",
+            "--title sel",
             "--highlight",
             "--legend",
             "--missed",
@@ -152,25 +137,15 @@ echo "echo file://{html}" >> $@
             "--dark-mode",
             "--rc genhtml_hi_limit=100",
         ]),
+        html = "\\$${COVERAGE_DIR}/html/index.html",
         report = "\\$${COVERAGE_DIR}/_coverage_report.dat",
     ),
-    tags = ["manual"],
-)
-
-sh_binary(
-    name = "coverage",
-    srcs = [":coverage.bash"],
-    args = [
-        "--@rules_multitransition//config:multitransition_test=False",
-        "--instrumentation_filter=//sel",
-        "//...",
-    ],
-    data = ["@lcov//:genhtml"],
+    executable = True,
     tags = ["manual"],
 )
 
 _coverage_open_script = """
-echo "#!/bin/bash" > $@
+echo "#!/usr/bin/env bash" > $@
 echo "set -euo pipefail" >> $@
 echo "" >> $@
 echo "cd \\$$BUILD_WORKSPACE_DIRECTORY" >> $@
